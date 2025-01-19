@@ -25,21 +25,34 @@ def draw_board():
             pygame.draw.rect(screen, color, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 # Tworzenia planszy
-def create_board():
-    board = []
-    for row in range(ROWS):
-        board.append([])
-        for col in range(COLS):
-            if row % 2 != col % 2:
-                if row < 3:
-                    board[row].append((RED, False))  # False oznacza, że pionek nie jest damką
-                elif row > 4:
-                    board[row].append((BLUE, False))
+class Piece:
+    def __init__(self, color, is_king=False):
+        self.color = color
+        self.is_king = is_king
+
+    def make_king(self):
+        self.is_king = True
+
+# Klasa dla planszy
+class Board:
+    def __init__(self):
+        self.board = self.create_board()
+
+    def create_board(self):
+        board = []
+        for row in range(ROWS):
+            board.append([])
+            for col in range(COLS):
+                if (row + col) % 2 != 0:  # Tylko ciemne pola
+                    if row < 3:
+                        board[row].append(Piece(RED))  # Pionki czerwone
+                    elif row > 4:
+                        board[row].append(Piece(BLUE))  # Pionki niebieskie
+                    else:
+                        board[row].append(None)  # Puste pole
                 else:
-                    board[row].append(0)
-            else:
-                board[row].append(0)
-    return board
+                    board[row].append(None)  # Puste pole
+        return board
 
 # Rysowania pionków
 def draw_pieces(board):
