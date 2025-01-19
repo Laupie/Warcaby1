@@ -107,20 +107,37 @@ def move_piece(board, from_row, from_col, to_row, to_col):
         board[to_row][to_col] = (color, True)
 
 # Główna pętla gry
-def main():
-    clock = pygame.time.Clock()
-    board = create_board()
-    selected_piece = None
-    turn = RED
+# Klasa gry
+class Game:
+    def __init__(self):
+        self.board = Board()
+        self.selected_piece = None
+        self.turn = RED
+        self.font = pygame.font.Font(None, 74)
 
-    running = True
-    while running:
-        clock.tick(30)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+    def select_piece(self, row, col):
+        piece = self.board.get_piece(row, col)
+        if piece and piece.color == self.turn:
+            self.selected_piece = (row, col)
 
-            if event.type == pygame.KEYDOWN:
+    def move_selected_piece(self, row, col):
+        if self.selected_piece:
+            from_row, from_col = self.selected_piece
+            self.board.move_piece(from_row, from_col, row, col)
+            self.selected_piece = None
+            self.turn = BLUE if self.turn == RED else RED
+
+    def handle_input(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            col, row = event.pos[0] // SQUARE_SIZE, event.pos[1] // SQUARE_SIZE
+            if self.selected_piece:
+                self.move_selected_piece(row, col)
+            else:
+                self.select_piece(row, col)
+
+    def draw(self, screen):
+        self.board.draw(screen)
+
                 if selected_piece:
                     row, col = selected_piece
                     new_row, new_col = row, col
