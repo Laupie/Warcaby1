@@ -18,11 +18,39 @@ pygame.display.set_caption("Warcaby")
 font = pygame.font.Font(None, 74)
 
 # Rysowanie planszy
-def draw_board():
-    for row in range(ROWS):
-        for col in range(COLS):
-            color = WHITE if (row + col) % 2 == 0 else BLACK
-            pygame.draw.rect(screen, color, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+# Klasa dla planszy
+class Board:
+    def __init__(self):
+        self.board = self.create_board()
+
+    def create_board(self):
+        board = []
+        for row in range(ROWS):
+            board.append([])
+            for col in range(COLS):
+                if (row + col) % 2 != 0:  # Tylko ciemne pola
+                    if row < 3:
+                        board[row].append(Piece(RED))  # Pionki czerwone
+                    elif row > 4:
+                        board[row].append(Piece(BLUE))  # Pionki niebieskie
+                    else:
+                        board[row].append(None)  # Puste pole
+                else:
+                    board[row].append(None)  # Puste pole
+        return board
+
+    def draw(self, screen):
+        for row in range(ROWS):
+            for col in range(COLS):
+                color = WHITE if (row + col) % 2 == 0 else BLACK
+                pygame.draw.rect(screen, color, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                piece = self.board[row][col]
+                if piece:
+                    piece_color = piece.color
+                    pygame.draw.circle(screen, piece_color, (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), SQUARE_SIZE // 2 - 10)
+                    if piece.is_king:
+                        pygame.draw.circle(screen, GOLD, (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), SQUARE_SIZE // 2 - 20, 3)
+
 
 # Tworzenia planszy
 class Piece:
