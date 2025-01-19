@@ -99,7 +99,7 @@ def move_piece(board, from_row, from_col, to_row, to_col):
     board[from_row][from_col] = 0
     board[to_row][to_col] = piece
 
-    # Promowanie na damkę
+# Promowanie na damkę
     color, king = piece
     if color == RED and to_row == ROWS - 1:
         board[to_row][to_col] = (color, True)
@@ -107,7 +107,6 @@ def move_piece(board, from_row, from_col, to_row, to_col):
         board[to_row][to_col] = (color, True)
 
 # Główna pętla gry
-# Klasa gry
 class Game:
     def __init__(self):
         self.board = Board()
